@@ -32,6 +32,7 @@ import { updateModule } from "./blocks/modules/updateModule";
 import { deleteModule } from "./blocks/modules/deleteModule";
 import { createModule } from "./blocks/modules/createModule";
 import { createStack } from "./blocks/stacks/createStack";
+import { createStackFromBlueprint } from "./blocks/stacks/createStackFromBlueprint";
 import { updateStack } from "./blocks/stacks/updateStack";
 import { deleteStack } from "./blocks/stacks/deleteStack";
 import { addComment } from "./blocks/runs/addComment";
@@ -149,6 +150,7 @@ export const app = defineApp({
     getStack,
     webhook,
     createStack,
+    createStackFromBlueprint,
     deleteStack,
     lockStack,
     unlockStack,
