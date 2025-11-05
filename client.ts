@@ -8,7 +8,7 @@ interface SpaceliftCredentials {
 
 interface SpaceliftApiResponse<T = any> {
   data?: T;
-  errors?: Array<{ message: string; extensions?: any }>;
+  errors?: Array<{ message: string; extensions?: Record<string, string> }>;
 }
 
 interface CachedJWTToken {
@@ -106,6 +106,16 @@ export async function getSpaceliftJWT(
   return jwt;
 }
 
+function formatExtensions(extensions: Record<string, string>) {
+  if (typeof extensions !== "object" || extensions === null) {
+    return JSON.stringify(extensions);
+  }
+
+  return Object.entries(extensions)
+    .map(([key, value], index) => `    ${index + 1}. ${key}: ${value}`)
+    .join("\n");
+}
+
 export async function executeSpaceliftQuery<T = any>(
   credentials: SpaceliftCredentials,
   query: string,
@@ -129,7 +139,7 @@ export async function executeSpaceliftQuery<T = any>(
 
   if (result.errors) {
     throw new Error(
-      `GraphQL error: ${result.errors.map((e) => e.message).join(", ")}`,
+      `GraphQL error:\n${result.errors.map((e) => (e.extensions ? ` - ${e.message}:\n${formatExtensions(e.extensions)}` : ` - ${e.message}`)).join("\n")}\n`,
     );
   }
 
