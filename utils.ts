@@ -7,7 +7,6 @@ interface SpaceliftBlockInputConfigParams
   > {
   graphqlFieldKey?: string;
 }
-
 export function defineSpaceliftInputConfig(
   params: SpaceliftBlockInputConfigParams,
 ): SpaceliftBlockInputConfigParams {

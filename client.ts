@@ -77,17 +77,10 @@ async function fetchNewJWT(
   };
 }
 
-export async function getSpaceliftJWT(
+export async function refreshSpaceliftJWT(
   credentials: SpaceliftCredentials,
 ): Promise<string> {
   const cacheKey = getCacheKey(credentials);
-
-  const cachedToken = await kv.app.get(cacheKey);
-
-  if (cachedToken.value) {
-    const cached = cachedToken.value as CachedJWTToken;
-    return cached.jwt;
-  }
 
   const { jwt, validUntil } = await fetchNewJWT(credentials);
 
@@ -106,6 +99,21 @@ export async function getSpaceliftJWT(
   return jwt;
 }
 
+export async function getSpaceliftJWT(
+  credentials: SpaceliftCredentials,
+): Promise<string> {
+  const cacheKey = getCacheKey(credentials);
+
+  const cachedToken = await kv.app.get(cacheKey);
+
+  if (cachedToken.value) {
+    const cached = cachedToken.value as CachedJWTToken;
+    return cached.jwt;
+  }
+
+  return refreshSpaceliftJWT(credentials);
+}
+
 function formatExtensions(extensions: Record<string, string>) {
   if (typeof extensions !== "object" || extensions === null) {
     return JSON.stringify(extensions);
@@ -121,26 +129,48 @@ export async function executeSpaceliftQuery<T = any>(
   query: string,
   variables?: Record<string, any>,
 ): Promise<T> {
-  const jwt = await getSpaceliftJWT(credentials);
+  let jwt = await getSpaceliftJWT(credentials);
 
-  const response = await fetch(`https://${credentials.endpoint}/graphql`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  });
+  const makeRequest = async (token: string) => {
+    const response = await fetch(`https://${credentials.endpoint}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    });
 
-  const result: SpaceliftApiResponse<T> = await response.json();
+    return await response.json();
+  };
+
+  let result: SpaceliftApiResponse<T> = await makeRequest(jwt);
 
   if (result.errors) {
-    throw new Error(
-      `GraphQL error:\n${result.errors.map((e) => (e.extensions ? ` - ${e.message}:\n${formatExtensions(e.extensions)}` : ` - ${e.message}`)).join("\n")}\n`,
-    );
+    const errorMessage = result.errors
+      .map((e) => e.message)
+      .join(" ")
+      .toLowerCase();
+
+    if (errorMessage.includes("unauthorized")) {
+      // Refresh JWT and retry once
+      jwt = await refreshSpaceliftJWT(credentials);
+      result = await makeRequest(jwt);
+
+      // Check for errors again after retry
+      if (result.errors) {
+        throw new Error(
+          `GraphQL error:\n${result.errors.map((e) => (e.extensions ? ` - ${e.message}:\n${formatExtensions(e.extensions)}` : ` - ${e.message}`)).join("\n")}\n`,
+        );
+      }
+    } else {
+      throw new Error(
+        `GraphQL error:\n${result.errors.map((e) => (e.extensions ? ` - ${e.message}:\n${formatExtensions(e.extensions)}` : ` - ${e.message}`)).join("\n")}\n`,
+      );
+    }
   }
 
   if (!result.data) {

@@ -1,6 +1,10 @@
 import { defineApp, http, kv, messaging, blocks } from "@slflows/sdk/v1";
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
-import { executeSpaceliftQuery, extractCredentials } from "./client";
+import {
+  executeSpaceliftQuery,
+  extractCredentials,
+  refreshSpaceliftJWT,
+} from "./client";
 import { webhook } from "./blocks/stacks/webhook";
 import { getStack } from "./blocks/stacks/getStack";
 import { lockStack } from "./blocks/stacks/lockStack";
@@ -261,6 +265,8 @@ export const app = defineApp({
 
     try {
       const credentials = extractCredentials(input.app.config);
+
+      await refreshSpaceliftJWT(credentials);
 
       if (!webhookId) {
         const webhookSecret = randomBytes(32).toString("hex");
