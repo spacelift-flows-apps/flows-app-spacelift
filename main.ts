@@ -50,7 +50,7 @@ import { performTask } from "./blocks/tasks/performTask";
 export const app = defineApp({
   name: "Spacelift",
   installationInstructions:
-    "To connect your Spacelift account:\n1. **Get API Key**: Log in to your Spacelift account and generate an API key\n2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')\n3. **Confirm**: Click 'Confirm' to complete the installation",
+    "To connect your Spacelift account:\n\n**Authentication Methods:**\n\nSpacelift supports two authentication methods:\n\n**Option 1: Identity Access Management (IAM)**\n1. **Get API Key**: Log in to your Spacelift account and generate an API key\n2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')\n3. **Confirm**: Click 'Confirm' to complete the installation\n\n**Option 2: Login Policy**\n1. **Generate API Key**: Log in to your Spacelift account and generate an API key\n2. **Create Login Policy**: In your Spacelift account, create a login policy with the following content:\n```\npackage spacelift\n\n# Basic login permissions\nallow if {\n    input.session.member\n}\n\n# Assign needed role for your space\nspace_writer contains \"space_id\" if {\n    input.session.login == \"api::api_key_id\"\n}\n```\n3. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint\n4. **Confirm**: Click 'Confirm' to complete the installation",
   config: {
     apiKeyId: {
       name: "API Key ID",
