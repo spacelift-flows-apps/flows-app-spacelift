@@ -52,7 +52,7 @@ export const app = defineApp({
   installationInstructions: `To connect your Spacelift account:
 
 1. **Generate API Key**: Log in to your Spacelift account and generate an API key
-2. **(Optional) Create Login Policy**: If using login policy authentication, create a login policy with the following content:
+2. **(Optional) Create Login Policy**: If using login policy authentication, create a login policy with the following content, or adjust one of your existing policies accordingly:
     \`\`\`rego
     package spacelift
 
@@ -62,8 +62,8 @@ export const app = defineApp({
     }
 
     # Assign needed role for your space
-    space_writer contains "space_id" if {
-        input.session.login == "api::api_key_id"
+    space_writer contains "your_space_id" if {
+        input.session.login == "api::your_api_key_id"
     }
     \`\`\`
 3. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
