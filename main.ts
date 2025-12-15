@@ -56,7 +56,7 @@ export const app = defineApp({
 Spacelift supports two authentication methods:
 
 **Option 1: Identity Access Management (IAM)**
-1. **Get API Key**: Log in to your Spacelift account and generate an API key
+1. **Generate API Key**: Log in to your Spacelift account and generate an API key
 2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
 3. **Confirm**: Click 'Confirm' to complete the installation
 
@@ -76,7 +76,7 @@ Spacelift supports two authentication methods:
         input.session.login == "api::api_key_id"
     }
     \`\`\`
-3. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint
+2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
 4. **Confirm**: Click 'Confirm' to complete the installation`,
   config: {
     apiKeyId: {
