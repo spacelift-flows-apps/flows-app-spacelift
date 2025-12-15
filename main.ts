@@ -51,33 +51,25 @@ export const app = defineApp({
   name: "Spacelift",
   installationInstructions: `To connect your Spacelift account:
 
-**Authentication Methods:**
-
-Spacelift supports two authentication methods:
-
-**Option 1: Identity Access Management (IAM)**
 1. **Generate API Key**: Log in to your Spacelift account and generate an API key
-2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
-3. **Confirm**: Click 'Confirm' to complete the installation
-
-**Option 2: Login Policy**
-1. **Generate API Key**: Log in to your Spacelift account and generate an API key
-2. **Create Login Policy**: In your Spacelift account, create a login policy with the following content: 
+2. **(Optional) Create Login Policy**: If using login policy authentication, create a login policy with the following content:
     \`\`\`rego
     package spacelift
-    
+
     # Basic login permissions
     allow if {
         input.session.member
     }
-    
+
     # Assign needed role for your space
     space_writer contains "space_id" if {
         input.session.login == "api::api_key_id"
     }
     \`\`\`
-2. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
-4. **Confirm**: Click 'Confirm' to complete the installation`,
+3. **Configure**: Enter your API Key ID, API Key Secret, and Spacelift endpoint (e.g., 'your-account.app.spacelift.io')
+4. **Confirm**: Click 'Confirm' to complete the installation
+
+**Note**: Spacelift supports two authentication methods - Identity Access Management (IAM) and Login Policy. The login policy step above is only required if you need to use login policy authentication.`,
   config: {
     apiKeyId: {
       name: "API Key ID",
