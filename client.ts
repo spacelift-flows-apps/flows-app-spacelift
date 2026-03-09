@@ -26,10 +26,14 @@ export function extractCredentials(
     throw new Error("Missing required Spacelift credentials in app config");
   }
 
+  const endpoint = (appConfig.endpoint as string)
+    .replace(/^https?:\/\//, "")
+    .replace(/\/+$/, "");
+
   return {
     apiKeyId: appConfig.apiKeyId,
     apiKeySecret: appConfig.apiKeySecret,
-    endpoint: appConfig.endpoint,
+    endpoint,
   };
 }
 
