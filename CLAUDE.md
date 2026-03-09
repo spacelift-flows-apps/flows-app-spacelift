@@ -9,6 +9,7 @@ This repository is an app repo based on our Flows App Template. It can be used a
 When working on the app, **always** make sure to read the appRuntime.ts from https://docs.useflows.com/appRuntime.ts . This is later injected by the Flows runtime, you should never include it yourself. It's presented there as a reference.
 
 If necessary, you may also consider reading the documentation about building Flows apps at https://docs.useflows.com/developers/building-apps/ , specifically:
+
 - Configuration: https://docs.useflows.com/developers/building-apps/configuration/
 - Events: https://docs.useflows.com/developers/building-apps/events/
 - Lifecycle: https://docs.useflows.com/developers/building-apps/lifecycle/
@@ -153,6 +154,7 @@ The template includes a complete CI/CD system:
 ### Configuration
 
 For commonly-static fields, try providing `suggestValues`. For example, in the Jira app we have
+
 ```ts
 async function fetchIssueTypes(
   jiraUrl: string,
@@ -199,7 +201,7 @@ inputs: {
             const projectKey = input.staticInputConfig?.projectKey as
               | string
               | undefined;
-            
+
             if (!projectKey) {
               return {
                 suggestedValues: [],
@@ -207,20 +209,20 @@ inputs: {
                   "Configure static value for Project Key to receive suggestions.",
               };
             }
-            
+
             const allTypes = await getIssueTypes(
               jiraUrl as string,
               email as string,
               apiToken as string,
               projectKey,
             );
-            
+
             let values = allTypes.map((type) => ({
               label: type.name,
               value: type.name,
               description: type.description,
             }));
-            
+
             if (input.searchPhrase) {
               const searchLower = input.searchPhrase.toLowerCase();
               values = values.filter(
@@ -230,11 +232,12 @@ inputs: {
                     v.description.toLowerCase().includes(searchLower)),
               );
             }
-            
+
             return { suggestedValues: values.slice(0, 50) };
           },
         },
 ```
+
 The memoization helps avoid making a ton of api calls as the user is fine-tuning their search phrase.
 
 It's not worth it providing those for fields that are very dynamic, and the user will generally want to base on event data.
@@ -267,8 +270,8 @@ It's not worth it providing those for fields that are very dynamic, and the user
 ### Blocks
 
 - When creating blocks for a subset of an api, or handlers for a subset of webhooks, always add "escape hatch blocks".
-    - A block for making authenticated well–structured requests to any api endpoint.
-    - A block for receiving any/all valid webhooks.
+  - A block for making authenticated well–structured requests to any api endpoint.
+  - A block for receiving any/all valid webhooks.
 
 ## Extension Guidelines
 
@@ -314,6 +317,7 @@ This template provides a solid foundation for building production-ready Flows ap
 The app can be submitted to Flows as a custom app, or added to a registry.
 
 The user can use [flowctl](https://github.com/spacelift-io/flowctl) to create a custom app in their Flows organization, and then a version of the app inside of that. They will more or less have to run:
+
 ```
 flowctl auth login # Follow the prompts to authenticate
 flowctl app create # Follow the prompts to create the app
@@ -321,5 +325,6 @@ flowctl version update --entrypoint main.ts --watch # Follow the prompts to crea
 ```
 
 More details can be found here:
+
 - https://docs.useflows.com/developers/deploying-apps/custom-apps/
 - https://docs.useflows.com/developers/deploying-apps/app-registries/

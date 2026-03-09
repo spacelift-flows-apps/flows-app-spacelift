@@ -50,6 +50,7 @@ import { promoteRun } from "./blocks/runs/promoteRun";
 import { triggerRun } from "./blocks/runs/triggerRun";
 import { onRunStateChange } from "./blocks/runs/subscribeToRunEvents";
 import { performTask } from "./blocks/tasks/performTask";
+import { deployTemplate } from "./blocks/templates/deployTemplate";
 
 export const app = defineApp({
   name: "Spacelift",
@@ -181,6 +182,9 @@ export const app = defineApp({
 
     // Task operations
     performTask,
+
+    // Template operations
+    deployTemplate,
   },
   http: {
     onRequest: async (input) => {
@@ -263,6 +267,28 @@ export const app = defineApp({
             payload: webhookPayload,
             pendingEventId,
             parentEventId,
+          },
+          blockIds: [blockId],
+        });
+      }
+
+      const { value: templateValue } = await kv.app.get(
+        `template-stack:${webhookPayload.stack.id}`,
+      );
+      if (templateValue) {
+        const {
+          blockId,
+          pendingEventId,
+          parentEventId,
+          deploymentId,
+          blueprintId,
+        } = templateValue;
+        await messaging.sendToBlocks({
+          body: {
+            pendingEventId,
+            parentEventId,
+            deploymentId,
+            blueprintId,
           },
           blockIds: [blockId],
         });
