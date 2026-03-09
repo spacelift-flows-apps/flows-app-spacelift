@@ -257,9 +257,11 @@ export const deployTemplate: AppBlock = {
         await kv.app.set({
           key: `template-deployment:${deployment.id}`,
           value: {
+            pendingEventId,
             blueprintId: deployment.blueprint.id,
             lastState: deployment.state,
             stackIds: deployment.stacks.map((s: { id: string }) => s.id),
+            createdAt: Date.now(),
           },
           ttl: TTL_7_DAYS,
         });
@@ -342,20 +344,17 @@ export const deployTemplate: AppBlock = {
       onTrigger: async () => {
         const staleThreshold = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
-        const pendingEvents = await kv.block.list({
-          keyPrefix: "pending:",
+        const trackedDeployments = await kv.app.list({
+          keyPrefix: "template-deployment:",
         });
 
-        for (const item of pendingEvents.pairs) {
-          if (item.value.createdAt < staleThreshold) {
-            const deploymentId = item.value.deploymentId;
-
+        for (const item of trackedDeployments.pairs) {
+          const { pendingEventId, createdAt } = item.value;
+          if (createdAt < staleThreshold) {
             await events.cancelPending(
-              item.value.pendingEventId,
-              `Deployment ${deploymentId} did not complete within 7 days - cleaning up stale pending event`,
+              pendingEventId,
+              `Deployment ${item.key.replace("template-deployment:", "")} did not complete within 7 days - cleaning up stale pending event`,
             );
-
-            await kv.block.delete([item.key]);
           }
         }
       },
