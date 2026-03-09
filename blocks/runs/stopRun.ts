@@ -43,7 +43,7 @@ const STOP_RUN_MUTATION = `
 `;
 
 export const stopRun: AppBlock = {
-  name: "Stop run",
+  name: "Stop Run",
   description: "Stop a run that's currently in progress",
   category: "Runs",
   inputs: {

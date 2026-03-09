@@ -22,7 +22,7 @@ const inputConfig = {
     graphqlFieldKey: "id",
   }),
   state: defineSpaceliftInputConfig({
-    name: "Run state",
+    name: "Run State",
     description: "The state for which to retrieve logs",
     type: {
       enum: [
@@ -52,7 +52,7 @@ const inputConfig = {
     graphqlFieldKey: "state",
   }),
   stateVersion: defineSpaceliftInputConfig({
-    name: "State version",
+    name: "State Version",
     description: "The state version for which to retrieve logs",
     type: "number",
     required: false,
@@ -83,7 +83,7 @@ const GET_RUN_LOGS_QUERY = `
 `;
 
 export const getRunLogs: AppBlock = {
-  name: "Get run logs",
+  name: "Get Run Logs",
   description: "Retrieve logs for a specific run and state from a stack",
   category: "Runs",
   inputs: {

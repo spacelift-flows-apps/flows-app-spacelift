@@ -22,7 +22,7 @@ const inputConfig = {
     graphqlFieldKey: "command",
   }),
   skipInitialization: defineSpaceliftInputConfig({
-    name: "Skip initialization",
+    name: "Skip Initialization",
     description:
       "Initialize the workspace before running this task. This means executing all the pre-initialization hooks as well as running the vendor-specific initialization procedure. Toggle this off only if you want to explicitly skip this step.",
     type: "boolean",
@@ -51,7 +51,7 @@ const TERMINAL_STATES = [
 ];
 
 export const performTask: AppBlock = {
-  name: "Perform task",
+  name: "Perform Task",
   description:
     "Execute a task on a Spacelift stack and emit events for state changes",
   category: "Tasks",
@@ -153,7 +153,7 @@ export const performTask: AppBlock = {
   outputs: {
     completed: {
       default: true,
-      name: "Run completed",
+      name: "Run Completed",
       description: "Emitted when the run reaches a terminal state",
       type: {
         type: "object",
@@ -246,7 +246,7 @@ export const performTask: AppBlock = {
     },
     stateChanged: {
       secondary: true,
-      name: "State changed",
+      name: "State Changed",
       description: "Emitted when the run state changes",
       type: {
         type: "object",

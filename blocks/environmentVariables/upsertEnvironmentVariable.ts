@@ -8,7 +8,7 @@ import {
 
 const inputConfig = {
   targetType: defineSpaceliftInputConfig({
-    name: "Target type",
+    name: "Target Type",
     description:
       "Type of entity to attach the environment variable to (use 'stack' for both stacks and modules)",
     type: {
@@ -45,7 +45,7 @@ const inputConfig = {
     graphqlFieldKey: "description",
   }),
   writeOnly: defineSpaceliftInputConfig({
-    name: "Write only",
+    name: "Write Only",
     description:
       "When marked as write-only, the value is only accessible to the Run, but not in the API or UI",
     type: "boolean",
@@ -80,7 +80,7 @@ const UPSERT_STACK_ENV_VAR_MUTATION = `
 `;
 
 export const upsertEnvironmentVariable: AppBlock = {
-  name: "Upsert environment variable",
+  name: "Upsert Environment Variable",
   description:
     "Create a new environment variable or update an existing one for a stack or context",
   category: "Environment Variables",

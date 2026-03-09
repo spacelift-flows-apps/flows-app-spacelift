@@ -35,7 +35,7 @@ const ATTACH_POLICY_MUTATION = `
 `;
 
 export const attachPolicyToStack: AppBlock = {
-  name: "Attach policy to stack",
+  name: "Attach Policy to Stack",
   description: "Attach a policy to a stack",
   category: "Policies",
   inputs: {

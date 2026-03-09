@@ -41,7 +41,7 @@ const ADD_COMMENT_MUTATION = `
 `;
 
 export const addComment: AppBlock = {
-  name: "Add comment to run",
+  name: "Add Comment to Run",
   description: "Add a comment to a run",
   category: "Runs",
   inputs: {

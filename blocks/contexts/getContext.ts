@@ -46,7 +46,7 @@ const GET_CONTEXT_QUERY = `
 `;
 
 export const getContext: AppBlock = {
-  name: "Get context",
+  name: "Get Context",
   description: "Retrieve details of a specific context",
   category: "Contexts",
   inputs: {

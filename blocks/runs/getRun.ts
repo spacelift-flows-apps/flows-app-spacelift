@@ -49,7 +49,7 @@ const GET_RUN_QUERY = `
 `;
 
 export const getRun: AppBlock = {
-  name: "Get run",
+  name: "Get Run",
   description: "Retrieve details of a specific run",
   category: "Runs",
   inputs: {

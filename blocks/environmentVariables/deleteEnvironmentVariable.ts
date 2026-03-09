@@ -4,7 +4,7 @@ import { defineSpaceliftInputConfig, mapInputConfig } from "../../utils";
 
 const inputConfig = {
   targetType: defineSpaceliftInputConfig({
-    name: "Target type",
+    name: "Target Type",
     description: "Type of entity to delete the environment variable from",
     type: {
       type: "string",
@@ -43,7 +43,7 @@ const DELETE_STACK_ENV_VAR_MUTATION = `
 `;
 
 export const deleteEnvironmentVariable: AppBlock = {
-  name: "Delete environment variable",
+  name: "Delete Environment Variable",
   description: "Delete an environment variable from a stack or context",
   category: "Environment Variables",
   inputs: {

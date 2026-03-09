@@ -15,7 +15,7 @@ const inputConfig = {
     graphqlFieldKey: "id",
   }),
   force: defineSpaceliftInputConfig({
-    name: "Force delete",
+    name: "Force Delete",
     description: "Force deletion even if the context has dependencies",
     type: "boolean",
     required: false,
@@ -32,7 +32,7 @@ const DELETE_CONTEXT_MUTATION = `
 `;
 
 export const deleteContext: AppBlock = {
-  name: "Delete context",
+  name: "Delete Context",
   description: "Delete a context",
   category: "Contexts",
   inputs: {

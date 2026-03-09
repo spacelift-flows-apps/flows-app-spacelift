@@ -25,7 +25,7 @@ const DELETE_MODULE_MUTATION = `
 `;
 
 export const deleteModule: AppBlock = {
-  name: "Delete module",
+  name: "Delete Module",
   description: "Delete a module",
   category: "Modules",
   inputs: {

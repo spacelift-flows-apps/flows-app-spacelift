@@ -37,7 +37,7 @@ const RETRY_RUN_MUTATION = `
 `;
 
 export const retryRun: AppBlock = {
-  name: "Retry run",
+  name: "Retry Run",
   description: "Retry a PR run that has finished",
   category: "Runs",
   inputs: {

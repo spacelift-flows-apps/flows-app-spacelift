@@ -67,7 +67,7 @@ const GET_MODULE_QUERY = `
 `;
 
 export const getModule: AppBlock = {
-  name: "Get module",
+  name: "Get Module",
   description: "Retrieve details of a specific module",
   category: "Modules",
   inputs: {

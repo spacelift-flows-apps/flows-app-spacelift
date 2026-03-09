@@ -8,7 +8,7 @@ import {
 
 const inputConfig = {
   name: defineSpaceliftInputConfig({
-    name: "Module name",
+    name: "Module Name",
     description: "Name of the module",
     type: "string",
     required: true,
@@ -43,7 +43,7 @@ const inputConfig = {
     graphqlFieldKey: "administrative",
   }),
   provider: defineSpaceliftInputConfig({
-    name: "VCS provider",
+    name: "VCS Provider",
     description: "VCS provider (GITHUB, GITLAB, BITBUCKET_CLOUD, etc.)",
     type: "string",
     required: false,
@@ -65,7 +65,7 @@ const inputConfig = {
     graphqlFieldKey: "description",
   }),
   projectRoot: defineSpaceliftInputConfig({
-    name: "Project root",
+    name: "Project Root",
     description: "Directory relative to workspace root containing module root",
     type: "string",
     required: false,
@@ -89,21 +89,21 @@ const inputConfig = {
     graphqlFieldKey: "labels",
   }),
   localPreviewEnabled: defineSpaceliftInputConfig({
-    name: "Enable local preview",
+    name: "Enable Local Preview",
     description: "Enable local workspace based versions",
     type: "boolean",
     required: false,
     graphqlFieldKey: "localPreviewEnabled",
   }),
   protectFromDeletion: defineSpaceliftInputConfig({
-    name: "Protect from deletion",
+    name: "Protect from Deletion",
     description: "Enable deletion protection",
     type: "boolean",
     required: false,
     graphqlFieldKey: "protectFromDeletion",
   }),
   sharedAccounts: defineSpaceliftInputConfig({
-    name: "Shared accounts",
+    name: "Shared Accounts",
     description: "List of account subdomains with access to the module",
     type: {
       type: "array",
@@ -113,7 +113,7 @@ const inputConfig = {
     graphqlFieldKey: "sharedAccounts",
   }),
   terraformProvider: defineSpaceliftInputConfig({
-    name: "Terraform provider",
+    name: "Terraform Provider",
     description: "Terraform provider for which this module is designed",
     type: "string",
     required: false,
@@ -141,14 +141,14 @@ const inputConfig = {
     graphqlFieldKey: "workerPool",
   }),
   workflowTool: defineSpaceliftInputConfig({
-    name: "Workflow tool",
+    name: "Workflow Tool",
     description: "Workflow tool (TERRAFORM_FOSS, OPEN_TOFU, CUSTOM)",
     type: "string",
     required: false,
     graphqlFieldKey: "workflowTool",
   }),
   runnerImage: defineSpaceliftInputConfig({
-    name: "Runner image",
+    name: "Runner Image",
     description: "Custom runner image for parsing runs",
     type: "string",
     required: false,
@@ -165,7 +165,7 @@ const CREATE_MODULE_MUTATION = `
 `;
 
 export const createModule: AppBlock = {
-  name: "Create module",
+  name: "Create Module",
   description: "Create a new Spacelift module",
   category: "Modules",
   inputs: {

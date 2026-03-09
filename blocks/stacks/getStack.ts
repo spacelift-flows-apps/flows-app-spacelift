@@ -310,7 +310,7 @@ const GET_STACK_QUERY = `
 `;
 
 export const getStack: AppBlock = {
-  name: "Get stack",
+  name: "Get Stack",
   description: "Retrieve details of a specific stack",
   category: "Stacks",
   inputs: {

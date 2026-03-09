@@ -80,7 +80,7 @@ const CREATE_POLICY_MUTATION = `
 `;
 
 export const createPolicy: AppBlock = {
-  name: "Create policy",
+  name: "Create Policy",
   description: "Create a new policy",
   category: "Policies",
   inputs: {

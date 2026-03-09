@@ -37,7 +37,7 @@ const PROMOTE_RUN_MUTATION = `
 `;
 
 export const promoteRun: AppBlock = {
-  name: "Promote run",
+  name: "Promote Run",
   description: "Promote a proposed run to a tracked one",
   category: "Runs",
   inputs: {

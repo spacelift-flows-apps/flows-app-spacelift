@@ -19,7 +19,7 @@ function shouldProcessEvent(payload: any, config: any) {
 }
 
 export const onRunStateChange: AppBlock = {
-  name: "On run state change",
+  name: "On Run State Change",
   description:
     "Subscribe to run state changes from Spacelift with configurable filtering",
   category: "Runs",
@@ -35,7 +35,7 @@ export const onRunStateChange: AppBlock = {
       required: false,
     },
     runStates: {
-      name: "Run states",
+      name: "Run States",
       description:
         "List of run states to emit events for. Leave empty to monitor all states.",
       type: {
@@ -59,7 +59,7 @@ export const onRunStateChange: AppBlock = {
       required: false,
     },
     runTypes: {
-      name: "Run types",
+      name: "Run Types",
       description:
         "List of run types to emit events for. Leave empty to monitor all types.",
       type: {
@@ -90,7 +90,7 @@ export const onRunStateChange: AppBlock = {
   },
   outputs: {
     runStateChanges: {
-      name: "Run state changes",
+      name: "Run State Changes",
       description: "All run state changes that match the configured filters",
       type: {
         type: "object",

@@ -28,7 +28,7 @@ const DETACH_POLICY_MUTATION = `
 `;
 
 export const detachPolicyFromStack: AppBlock = {
-  name: "Detach policy from stack",
+  name: "Detach Policy from Stack",
   description: "Detach a policy from a stack using the attachment ID",
   category: "Policies",
   inputs: {

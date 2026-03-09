@@ -26,7 +26,7 @@ const inputConfig = {
 };
 
 export const graphqlQuery: AppBlock = {
-  name: "GraphQL query",
+  name: "GraphQL Query",
   description:
     "Execute an authenticated GraphQL query or mutation against the Spacelift API. This is an escape hatch block for operations not covered by dedicated blocks.",
   category: "API",
@@ -53,7 +53,7 @@ export const graphqlQuery: AppBlock = {
   },
   outputs: {
     default: {
-      name: "Query result",
+      name: "Query Result",
       description: "The data returned by the GraphQL query",
       type: {
         type: "object",

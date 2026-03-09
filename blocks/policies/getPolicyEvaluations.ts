@@ -29,7 +29,7 @@ const GET_POLICY_EVALUATIONS_QUERY = `
 `;
 
 export const getPolicyEvaluations: AppBlock = {
-  name: "Get policy evaluations",
+  name: "Get Policy Evaluations",
   description: "Retrieve evaluations for a policy",
   category: "Policies",
   inputs: {

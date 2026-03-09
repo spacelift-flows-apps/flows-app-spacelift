@@ -70,7 +70,7 @@ const UPDATE_POLICY_MUTATION = `
 `;
 
 export const updatePolicy: AppBlock = {
-  name: "Update policy",
+  name: "Update Policy",
   description: "Update an existing policy",
   category: "Policies",
   inputs: {

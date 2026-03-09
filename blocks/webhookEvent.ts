@@ -1,7 +1,7 @@
 import { AppBlock, events } from "@slflows/sdk/v1";
 
 export const webhookEvent: AppBlock = {
-  name: "On notification policy event",
+  name: "On Notification Policy Event",
   description:
     "Receive all events from the Spacelift notification policy. This is an escape hatch block that outputs the raw payload without any filtering.",
   category: "Events",
@@ -15,7 +15,7 @@ export const webhookEvent: AppBlock = {
   },
   outputs: {
     default: {
-      name: "Webhook event",
+      name: "Webhook Event",
       description: "Raw webhook payload from Spacelift notification policy",
       type: {
         type: "object",

@@ -166,7 +166,7 @@ const deploymentOutputSchema = {
 };
 
 export const deployTemplate: AppBlock = {
-  name: "Deploy template",
+  name: "Deploy Template",
   description:
     "Deploy a Spacelift template and track deployment status via webhook notifications",
   category: "Templates",
@@ -364,14 +364,14 @@ export const deployTemplate: AppBlock = {
   outputs: {
     completed: {
       default: true,
-      name: "Deployment completed",
+      name: "Deployment Completed",
       description:
         "Emitted when the template deployment reaches a terminal state",
       type: deploymentOutputSchema,
     },
     stateChanged: {
       secondary: true,
-      name: "Status updated",
+      name: "Status Updated",
       description: "Emitted when the template deployment status changes",
       type: deploymentOutputSchema,
     },

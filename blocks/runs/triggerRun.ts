@@ -48,7 +48,7 @@ const TERMINAL_STATES = [
 ];
 
 export const triggerRun: AppBlock = {
-  name: "Trigger run",
+  name: "Trigger Run",
   description:
     "Start a new run on a Spacelift stack and emit events for state changes",
   category: "Runs",
@@ -149,7 +149,7 @@ export const triggerRun: AppBlock = {
   outputs: {
     completed: {
       default: true,
-      name: "Run completed",
+      name: "Run Completed",
       description: "Emitted when the run reaches a terminal state",
       type: {
         type: "object",
@@ -242,7 +242,7 @@ export const triggerRun: AppBlock = {
     },
     stateChanged: {
       secondary: true,
-      name: "State changed",
+      name: "State Changed",
       description: "Emitted when the run state changes",
       type: {
         type: "object",

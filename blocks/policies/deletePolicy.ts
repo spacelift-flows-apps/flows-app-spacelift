@@ -15,7 +15,7 @@ const inputConfig = {
     graphqlFieldKey: "id",
   }),
   force: defineSpaceliftInputConfig({
-    name: "Force delete",
+    name: "Force Delete",
     description: "Force delete the policy even if it has attached stacks",
     type: "boolean",
     required: false,
@@ -32,7 +32,7 @@ const DELETE_POLICY_MUTATION = `
 `;
 
 export const deletePolicy: AppBlock = {
-  name: "Delete policy",
+  name: "Delete Policy",
   description: "Delete a policy",
   category: "Policies",
   inputs: {
