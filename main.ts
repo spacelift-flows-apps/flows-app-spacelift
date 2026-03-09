@@ -51,6 +51,7 @@ import { triggerRun } from "./blocks/runs/triggerRun";
 import { onRunStateChange } from "./blocks/runs/subscribeToRunEvents";
 import { performTask } from "./blocks/tasks/performTask";
 import { deployTemplate } from "./blocks/templates/deployTemplate";
+import { webhookEvent } from "./blocks/webhookEvent";
 
 export const app = defineApp({
   name: "Spacelift",
@@ -185,6 +186,9 @@ export const app = defineApp({
 
     // Template operations
     deployTemplate,
+
+    // Event operations
+    webhookEvent,
   },
   http: {
     onRequest: async (input) => {
@@ -245,6 +249,16 @@ export const app = defineApp({
         statusCode: 200,
         body: { message: "Webhook received" },
       });
+
+      const escapeHatchBlocks = await blocks.list({
+        typeIds: ["webhookEvent"],
+      });
+      if (escapeHatchBlocks.blocks.length > 0) {
+        await messaging.sendToBlocks({
+          body: { payload: webhookPayload },
+          blockIds: escapeHatchBlocks.blocks.map((block) => block.id),
+        });
+      }
 
       if (webhookPayload.run && webhookPayload.stack) {
         const subscriptionBlocks = await blocks.list({
