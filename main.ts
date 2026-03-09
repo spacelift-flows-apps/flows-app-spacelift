@@ -189,7 +189,7 @@ export const app = defineApp({
     deployTemplate,
 
     // Event operations
-    webhookEvent,
+    onNotificationPolicyEvent: webhookEvent,
 
     // API operations
     graphqlQuery,
@@ -255,7 +255,7 @@ export const app = defineApp({
       });
 
       const escapeHatchBlocks = await blocks.list({
-        typeIds: ["webhookEvent"],
+        typeIds: ["onNotificationPolicyEvent"],
       });
       if (escapeHatchBlocks.blocks.length > 0) {
         await messaging.sendToBlocks({
