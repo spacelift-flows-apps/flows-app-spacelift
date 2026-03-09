@@ -277,39 +277,43 @@ export const app = defineApp({
         });
       }
 
-      const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
-      if (value) {
-        const { blockId, pendingEventId, parentEventId } = value;
-        await messaging.sendToBlocks({
-          body: {
-            payload: webhookPayload,
-            pendingEventId,
-            parentEventId,
-          },
-          blockIds: [blockId],
-        });
+      if (webhookPayload.run?.id) {
+        const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
+        if (value) {
+          const { blockId, pendingEventId, parentEventId } = value;
+          await messaging.sendToBlocks({
+            body: {
+              payload: webhookPayload,
+              pendingEventId,
+              parentEventId,
+            },
+            blockIds: [blockId],
+          });
+        }
       }
 
-      const { value: templateValue } = await kv.app.get(
-        `template-stack:${webhookPayload.stack.id}`,
-      );
-      if (templateValue) {
-        const {
-          blockId,
-          pendingEventId,
-          parentEventId,
-          deploymentId,
-          blueprintId,
-        } = templateValue;
-        await messaging.sendToBlocks({
-          body: {
+      if (webhookPayload.stack?.id) {
+        const { value: templateValue } = await kv.app.get(
+          `template-stack:${webhookPayload.stack.id}`,
+        );
+        if (templateValue) {
+          const {
+            blockId,
             pendingEventId,
             parentEventId,
             deploymentId,
             blueprintId,
-          },
-          blockIds: [blockId],
-        });
+          } = templateValue;
+          await messaging.sendToBlocks({
+            body: {
+              pendingEventId,
+              parentEventId,
+              deploymentId,
+              blueprintId,
+            },
+            blockIds: [blockId],
+          });
+        }
       }
     },
   },
