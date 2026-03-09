@@ -110,8 +110,8 @@ function buildEventData(deployment: any) {
     deploymentId: deployment.id,
     name: deployment.name,
     state: deployment.state,
-    blueprint: deployment.blueprint,
-    blueprintVersion: deployment.blueprintVersion,
+    template: deployment.blueprint,
+    templateVersion: deployment.blueprintVersion,
     outputs: collectOutputs(deployment.stacks),
     space: deployment.space,
   };
@@ -135,12 +135,12 @@ const deploymentOutputSchema = {
         "DISCARDED",
       ],
     },
-    blueprint: {
+    template: {
       type: "object" as const,
       properties: { id: { type: "string" as const } },
       required: ["id"],
     },
-    blueprintVersion: {
+    templateVersion: {
       type: "object" as const,
       properties: {
         id: { type: "string" as const },
@@ -370,7 +370,7 @@ export const deployTemplate: AppBlock = {
     },
     stateChanged: {
       secondary: true,
-      name: "Status Updated",
+      name: "State Changed",
       description: "Emitted when the template deployment status changes",
       type: deploymentOutputSchema,
     },
