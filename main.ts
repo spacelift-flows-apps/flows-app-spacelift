@@ -52,6 +52,7 @@ import { onRunStateChange } from "./blocks/runs/subscribeToRunEvents";
 import { performTask } from "./blocks/tasks/performTask";
 import { deployTemplate } from "./blocks/templates/deployTemplate";
 import { webhookEvent } from "./blocks/webhookEvent";
+import { graphqlQuery } from "./blocks/graphqlQuery";
 
 export const app = defineApp({
   name: "Spacelift",
@@ -189,6 +190,9 @@ export const app = defineApp({
 
     // Event operations
     webhookEvent,
+
+    // API operations
+    graphqlQuery,
   },
   http: {
     onRequest: async (input) => {
