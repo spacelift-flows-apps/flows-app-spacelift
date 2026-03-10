@@ -357,10 +357,7 @@ export const deployTemplate: AppBlock = {
         for (const item of trackedDeployments.pairs) {
           const { pendingEventId, createdAt } = item.value;
           if (createdAt < staleThreshold) {
-            const deploymentId = item.key.replace(
-              "template-deployment:",
-              "",
-            );
+            const deploymentId = item.key.replace("template-deployment:", "");
             const stackIds = (item.value.stackIds as string[]) || [];
 
             await events.cancelPending(
