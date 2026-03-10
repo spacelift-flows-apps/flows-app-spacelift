@@ -43,7 +43,7 @@ const inputConfig = {
     graphqlFieldKey: "description",
   }),
   provider: defineSpaceliftInputConfig({
-    name: "VCS provider",
+    name: "VCS Provider",
     description: "VCS provider (GITHUB, GITLAB, BITBUCKET_CLOUD, etc.)",
     type: "string",
     required: false,
@@ -85,14 +85,14 @@ const inputConfig = {
     graphqlFieldKey: "localPreviewEnabled",
   }),
   protectFromDeletion: defineSpaceliftInputConfig({
-    name: "Protect from deletion",
+    name: "Protect from Deletion",
     description: "Enable deletion protection",
     type: "boolean",
     required: false,
     graphqlFieldKey: "protectFromDeletion",
   }),
   projectRoot: defineSpaceliftInputConfig({
-    name: "Project root",
+    name: "Project Root",
     description:
       "Directory relative to workspace root containing stack entrypoint",
     type: "string",
@@ -100,7 +100,7 @@ const inputConfig = {
     graphqlFieldKey: "projectRoot",
   }),
   additionalProjectGlobs: defineSpaceliftInputConfig({
-    name: "Additional project globs",
+    name: "Additional Project Globs",
     description: "List of globs that trigger runs when changed",
     type: {
       type: "array",
@@ -110,14 +110,14 @@ const inputConfig = {
     graphqlFieldKey: "additionalProjectGlobs",
   }),
   terraformVersion: defineSpaceliftInputConfig({
-    name: "Terraform version",
+    name: "Terraform Version",
     description: "Terraform version to use (can be a version range)",
     type: "string",
     required: false,
     graphqlFieldKey: "terraformVersion",
   }),
   runnerImage: defineSpaceliftInputConfig({
-    name: "Runner image",
+    name: "Runner Image",
     description: "Custom runner image for processing runs",
     type: "string",
     required: false,
@@ -152,14 +152,14 @@ const inputConfig = {
     graphqlFieldKey: "githubActionDeploy",
   }),
   enableWellKnownSecretMasking: defineSpaceliftInputConfig({
-    name: "Enable secret masking",
+    name: "Enable Secret Masking",
     description: "Enable masking for well-known secrets",
     type: "boolean",
     required: false,
     graphqlFieldKey: "enableWellKnownSecretMasking",
   }),
   enableSensitiveOutputUpload: defineSpaceliftInputConfig({
-    name: "Enable sensitive output upload",
+    name: "Enable Sensitive Output Upload",
     description: "Upload sensitive outputs for stack dependencies",
     type: "boolean",
     required: false,
@@ -176,7 +176,7 @@ const inputConfig = {
     graphqlFieldKey: "labels",
   }),
   afterApply: defineSpaceliftInputConfig({
-    name: "After apply scripts",
+    name: "After Apply Scripts",
     description: "Scripts to run after apply",
     type: {
       type: "array",
@@ -186,7 +186,7 @@ const inputConfig = {
     graphqlFieldKey: "afterApply",
   }),
   beforeApply: defineSpaceliftInputConfig({
-    name: "Before apply scripts",
+    name: "Before Apply Scripts",
     description: "Scripts to run before apply",
     type: {
       type: "array",
@@ -196,7 +196,7 @@ const inputConfig = {
     graphqlFieldKey: "beforeApply",
   }),
   afterDestroy: defineSpaceliftInputConfig({
-    name: "After destroy scripts",
+    name: "After Destroy Scripts",
     description: "Scripts to run after destroy",
     type: {
       type: "array",
@@ -206,7 +206,7 @@ const inputConfig = {
     graphqlFieldKey: "afterDestroy",
   }),
   beforeDestroy: defineSpaceliftInputConfig({
-    name: "Before destroy scripts",
+    name: "Before Destroy Scripts",
     description: "Scripts to run before destroy",
     type: {
       type: "array",
@@ -216,7 +216,7 @@ const inputConfig = {
     graphqlFieldKey: "beforeDestroy",
   }),
   afterInit: defineSpaceliftInputConfig({
-    name: "After init scripts",
+    name: "After Init Scripts",
     description: "Scripts to run after init",
     type: {
       type: "array",
@@ -226,7 +226,7 @@ const inputConfig = {
     graphqlFieldKey: "afterInit",
   }),
   beforeInit: defineSpaceliftInputConfig({
-    name: "Before init scripts",
+    name: "Before Init Scripts",
     description: "Scripts to run before init",
     type: {
       type: "array",
@@ -236,7 +236,7 @@ const inputConfig = {
     graphqlFieldKey: "beforeInit",
   }),
   afterPlan: defineSpaceliftInputConfig({
-    name: "After plan scripts",
+    name: "After Plan Scripts",
     description: "Scripts to run after plan",
     type: {
       type: "array",
@@ -246,7 +246,7 @@ const inputConfig = {
     graphqlFieldKey: "afterPlan",
   }),
   beforePlan: defineSpaceliftInputConfig({
-    name: "Before plan scripts",
+    name: "Before Plan Scripts",
     description: "Scripts to run before plan",
     type: {
       type: "array",
@@ -256,7 +256,7 @@ const inputConfig = {
     graphqlFieldKey: "beforePlan",
   }),
   afterPerform: defineSpaceliftInputConfig({
-    name: "After perform scripts",
+    name: "After Perform Scripts",
     description: "Scripts to run after perform",
     type: {
       type: "array",
@@ -266,7 +266,7 @@ const inputConfig = {
     graphqlFieldKey: "afterPerform",
   }),
   beforePerform: defineSpaceliftInputConfig({
-    name: "Before perform scripts",
+    name: "Before Perform Scripts",
     description: "Scripts to run before perform",
     type: {
       type: "array",
@@ -276,7 +276,7 @@ const inputConfig = {
     graphqlFieldKey: "beforePerform",
   }),
   afterRun: defineSpaceliftInputConfig({
-    name: "After run scripts",
+    name: "After Run Scripts",
     description: "Scripts to run after any run",
     type: {
       type: "array",
@@ -286,7 +286,7 @@ const inputConfig = {
     graphqlFieldKey: "afterRun",
   }),
   manageState: defineSpaceliftInputConfig({
-    name: "Manage state",
+    name: "Manage State",
     description: "Let Spacelift manage the Terraform state file",
     type: "boolean",
     required: false,
@@ -303,7 +303,7 @@ const CREATE_STACK_MUTATION = `
 `;
 
 export const createStack: AppBlock = {
-  name: "Create stack",
+  name: "Create Stack",
   description: "Create a new Spacelift stack",
   category: "Stacks",
   inputs: {

@@ -26,7 +26,7 @@ const DELETE_WEBHOOK_MUTATION = `
 `;
 
 export const webhook: AppBlock = {
-  name: "Stack webhook",
+  name: "Stack Webhook",
   description: "Manages webhook integration for a Spacelift stack",
   category: "Stacks",
   config: {
@@ -37,7 +37,7 @@ export const webhook: AppBlock = {
       required: true,
     },
     enabled: {
-      name: "Enable webhook",
+      name: "Enable Webhook",
       description: "Whether the webhook should be enabled",
       type: "boolean",
       required: false,
@@ -167,7 +167,7 @@ export const webhook: AppBlock = {
 
   outputs: {
     default: {
-      name: "Spacelift webhook event",
+      name: "Spacelift Webhook Event",
       description: "Emitted when a Spacelift webhook is received",
       type: {
         type: "object",

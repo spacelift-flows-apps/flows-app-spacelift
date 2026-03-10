@@ -15,7 +15,7 @@ const inputConfig = {
     graphqlFieldKey: "stack",
   }),
   runType: defineSpaceliftInputConfig({
-    name: "Run rype",
+    name: "Run Type",
     description: "Type of run to start",
     type: {
       enum: ["PROPOSED", "TRACKED", "DESTROY"],
@@ -48,7 +48,7 @@ const START_RUN_MUTATION = `
 `;
 
 export const startRun: AppBlock = {
-  name: "Start run",
+  name: "Start Run",
   description: "Start a new run on a Spacelift stack",
   category: "Runs",
   inputs: {

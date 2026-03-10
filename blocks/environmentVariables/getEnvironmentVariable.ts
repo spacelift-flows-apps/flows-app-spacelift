@@ -4,7 +4,7 @@ import { defineSpaceliftInputConfig, mapInputConfig } from "../../utils";
 
 const inputConfig = {
   targetType: defineSpaceliftInputConfig({
-    name: "Target type",
+    name: "Target Type",
     description: "Type of entity to get the environment variable from",
     type: {
       type: "string",
@@ -75,7 +75,7 @@ const GET_MODULE_QUERY = `
 `;
 
 export const getEnvironmentVariable: AppBlock = {
-  name: "Get environment variable",
+  name: "Get Environment Variable",
   description: "Retrieve an environment variable from a stack or context",
   category: "Environment Variables",
   inputs: {

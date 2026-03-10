@@ -44,7 +44,7 @@ const DISCARD_RUN_MUTATION = `
 `;
 
 export const discardRun: AppBlock = {
-  name: "Discard run",
+  name: "Discard Run",
   description: "Discard a run that's waiting to be applied",
   category: "Runs",
   inputs: {

@@ -43,7 +43,7 @@ const SIMULATE_POLICY_MUTATION = `
 `;
 
 export const simulatePolicy: AppBlock = {
-  name: "Simulate policy",
+  name: "Simulate Policy",
   description: "Test a policy with sample input data",
   category: "Policies",
   inputs: {

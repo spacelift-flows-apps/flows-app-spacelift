@@ -36,7 +36,7 @@ const CREATE_STACK_FROM_BLUEPRINT_MUTATION = `
 `;
 
 export const createStackFromBlueprint: AppBlock = {
-  name: "Create stack from blueprint",
+  name: "Create Stack from Blueprint",
   description: "Create a new Spacelift stack from a blueprint template",
   category: "Stacks",
   inputs: {

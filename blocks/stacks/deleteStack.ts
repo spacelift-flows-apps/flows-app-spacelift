@@ -15,7 +15,7 @@ const inputConfig = {
     graphqlFieldKey: "id",
   }),
   destroyResources: defineSpaceliftInputConfig({
-    name: "Destroy resources",
+    name: "Destroy Resources",
     description: "Whether to destroy the stack's resources before deletion",
     type: "boolean",
     required: false,
@@ -33,7 +33,7 @@ const DELETE_STACK_MUTATION = `
 `;
 
 export const deleteStack: AppBlock = {
-  name: "Delete stack",
+  name: "Delete Stack",
   description: "Delete a stack",
   category: "Stacks",
   inputs: {

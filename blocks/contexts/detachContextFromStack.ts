@@ -26,7 +26,7 @@ const DETACH_CONTEXT_MUTATION = `
 `;
 
 export const detachContextFromStack: AppBlock = {
-  name: "Detach context from stack",
+  name: "Detach Context from Stack",
   description: "Detach a context from a stack using the attachment ID",
   category: "Contexts",
   inputs: {

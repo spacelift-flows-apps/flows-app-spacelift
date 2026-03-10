@@ -30,7 +30,7 @@ const DELETE_CONTEXT_MUTATION = `
 `;
 
 export const contextResource: AppBlock = {
-  name: "Context resource",
+  name: "Context Resource",
   description: "Manages a Spacelift context resource lifecycle",
   category: "Contexts",
   config: {
@@ -41,7 +41,7 @@ export const contextResource: AppBlock = {
       required: true,
     },
     environmentVariables: {
-      name: "Environment variables",
+      name: "Environment Variables",
       description:
         "Environment variables to attach to the context (key-value pairs)",
       type: {

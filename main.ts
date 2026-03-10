@@ -50,6 +50,9 @@ import { promoteRun } from "./blocks/runs/promoteRun";
 import { triggerRun } from "./blocks/runs/triggerRun";
 import { onRunStateChange } from "./blocks/runs/subscribeToRunEvents";
 import { performTask } from "./blocks/tasks/performTask";
+import { deployTemplate } from "./blocks/templates/deployTemplate";
+import { webhookEvent } from "./blocks/webhookEvent";
+import { graphqlQuery } from "./blocks/graphqlQuery";
 
 export const app = defineApp({
   name: "Spacelift",
@@ -181,6 +184,15 @@ export const app = defineApp({
 
     // Task operations
     performTask,
+
+    // Template operations
+    deployTemplate,
+
+    // Event operations
+    onNotificationPolicyEvent: webhookEvent,
+
+    // API operations
+    graphqlQuery,
   },
   http: {
     onRequest: async (input) => {
@@ -242,6 +254,16 @@ export const app = defineApp({
         body: { message: "Webhook received" },
       });
 
+      const escapeHatchBlocks = await blocks.list({
+        typeIds: ["onNotificationPolicyEvent"],
+      });
+      if (escapeHatchBlocks.blocks.length > 0) {
+        await messaging.sendToBlocks({
+          body: { payload: webhookPayload },
+          blockIds: escapeHatchBlocks.blocks.map((block) => block.id),
+        });
+      }
+
       if (webhookPayload.run && webhookPayload.stack) {
         const subscriptionBlocks = await blocks.list({
           typeIds: ["onRunStateChange"],
@@ -255,17 +277,43 @@ export const app = defineApp({
         });
       }
 
-      const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
-      if (value) {
-        const { blockId, pendingEventId, parentEventId } = value;
-        await messaging.sendToBlocks({
-          body: {
-            payload: webhookPayload,
+      if (webhookPayload.run?.id) {
+        const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
+        if (value) {
+          const { blockId, pendingEventId, parentEventId } = value;
+          await messaging.sendToBlocks({
+            body: {
+              payload: webhookPayload,
+              pendingEventId,
+              parentEventId,
+            },
+            blockIds: [blockId],
+          });
+        }
+      }
+
+      if (webhookPayload.stack?.id) {
+        const { value: templateValue } = await kv.app.get(
+          `template-stack:${webhookPayload.stack.id}`,
+        );
+        if (templateValue) {
+          const {
+            blockId,
             pendingEventId,
             parentEventId,
-          },
-          blockIds: [blockId],
-        });
+            deploymentId,
+            blueprintId,
+          } = templateValue;
+          await messaging.sendToBlocks({
+            body: {
+              pendingEventId,
+              parentEventId,
+              deploymentId,
+              blueprintId,
+            },
+            blockIds: [blockId],
+          });
+        }
       }
     },
   },

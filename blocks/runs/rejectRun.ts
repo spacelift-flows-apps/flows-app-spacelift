@@ -43,7 +43,7 @@ const REJECT_RUN_MUTATION = `
 `;
 
 export const rejectRun: AppBlock = {
-  name: "Reject run",
+  name: "Reject Run",
   description: "Reject a run that requires approval",
   category: "Runs",
   inputs: {

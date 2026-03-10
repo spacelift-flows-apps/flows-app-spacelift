@@ -50,7 +50,7 @@ const inputConfig = {
     graphqlFieldKey: "namespace",
   }),
   provider: defineSpaceliftInputConfig({
-    name: "VCS provider",
+    name: "VCS Provider",
     description: "VCS provider (GITHUB, GITLAB, BITBUCKET_CLOUD, etc.)",
     type: "string",
     required: false,
@@ -81,7 +81,7 @@ const inputConfig = {
     graphqlFieldKey: "labels",
   }),
   localPreviewEnabled: defineSpaceliftInputConfig({
-    name: "Enable local preview",
+    name: "Enable Local Preview",
     description: "Enable local workspace based versions",
     type: "boolean",
     required: false,
@@ -95,14 +95,14 @@ const inputConfig = {
     graphqlFieldKey: "projectRoot",
   }),
   protectFromDeletion: defineSpaceliftInputConfig({
-    name: "Protect from deletion",
+    name: "Protect from Deletion",
     description: "Enable deletion protection",
     type: "boolean",
     required: false,
     graphqlFieldKey: "protectFromDeletion",
   }),
   sharedAccounts: defineSpaceliftInputConfig({
-    name: "Shared accounts",
+    name: "Shared Accounts",
     description: "List of account subdomains with access to the module",
     type: {
       type: "array",
@@ -133,14 +133,14 @@ const inputConfig = {
     graphqlFieldKey: "workerPool",
   }),
   workflowTool: defineSpaceliftInputConfig({
-    name: "Workflow tool",
+    name: "Workflow Tool",
     description: "Workflow tool (TERRAFORM_FOSS, OPEN_TOFU, CUSTOM)",
     type: "string",
     required: false,
     graphqlFieldKey: "workflowTool",
   }),
   runnerImage: defineSpaceliftInputConfig({
-    name: "Runner image",
+    name: "Runner Image",
     description: "Custom runner image for parsing runs",
     type: "string",
     required: false,
@@ -187,7 +187,7 @@ const UPDATE_MODULE_V2_MUTATION = `
 `;
 
 export const updateModule: AppBlock = {
-  name: "Update module",
+  name: "Update Module",
   description: "Update an existing module configuration",
   category: "Modules",
   inputs: {

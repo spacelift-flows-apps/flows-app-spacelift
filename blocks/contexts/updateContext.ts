@@ -51,7 +51,7 @@ const UPDATE_CONTEXT_MUTATION = `
 `;
 
 export const updateContext: AppBlock = {
-  name: "Update context",
+  name: "Update Context",
   description: "Update an existing context.",
   category: "Contexts",
   inputs: {

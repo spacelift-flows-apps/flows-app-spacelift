@@ -41,7 +41,7 @@ const ATTACH_CONTEXT_MUTATION = `
 `;
 
 export const attachContextToStack: AppBlock = {
-  name: "Attach context to stack",
+  name: "Attach Context to Stack",
   description: "Attach a context to a stack",
   category: "Contexts",
   inputs: {

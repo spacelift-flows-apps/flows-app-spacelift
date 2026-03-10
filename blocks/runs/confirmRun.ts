@@ -44,7 +44,7 @@ const CONFIRM_RUN_MUTATION = `
 `;
 
 export const confirmRun: AppBlock = {
-  name: "Confirm run",
+  name: "Confirm Run",
   description: "Confirm a run that is waiting for confirmation",
   category: "Runs",
   inputs: {

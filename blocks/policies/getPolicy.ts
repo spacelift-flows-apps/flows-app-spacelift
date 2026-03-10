@@ -31,7 +31,7 @@ const GET_POLICY_QUERY = `
 `;
 
 export const getPolicy: AppBlock = {
-  name: "Get policy",
+  name: "Get Policy",
   description: "Retrieve details of a specific policy",
   category: "Policies",
   inputs: {

@@ -15,7 +15,7 @@ const inputConfig = {
     graphqlFieldKey: "id",
   }),
   note: defineSpaceliftInputConfig({
-    name: "Lock note",
+    name: "Lock Note",
     description: "Note for locking the stack",
     type: "string",
     required: false,
@@ -34,7 +34,7 @@ const LOCK_STACK_MUTATION = `
 `;
 
 export const lockStack: AppBlock = {
-  name: "Lock stack",
+  name: "Lock Stack",
   description: "Lock the stack for exclusive use.",
   category: "Stacks",
   inputs: {

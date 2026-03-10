@@ -26,7 +26,7 @@ const UNLOCK_STACK_MUTATION = `
 `;
 
 export const unlockStack: AppBlock = {
-  name: "Unlock stack",
+  name: "Unlock Stack",
   description: "Unlock a stack to allow runs",
   category: "Stacks",
   inputs: {

@@ -8,7 +8,7 @@ import {
 
 const inputConfig = {
   name: defineSpaceliftInputConfig({
-    name: "Context name",
+    name: "Context Name",
     description: "Name of the context",
     type: "string",
     required: true,
@@ -50,7 +50,7 @@ const CREATE_CONTEXT_MUTATION = `
 `;
 
 export const createContext: AppBlock = {
-  name: "Create context",
+  name: "Create Context",
   description: "Create a new context",
   category: "Contexts",
   inputs: {

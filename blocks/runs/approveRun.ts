@@ -43,7 +43,7 @@ const APPROVE_RUN_MUTATION = `
 `;
 
 export const approveRun: AppBlock = {
-  name: "Approve run",
+  name: "Approve Run",
   description: "Approve a run that requires approval",
   category: "Runs",
   inputs: {
