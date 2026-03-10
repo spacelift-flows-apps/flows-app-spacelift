@@ -228,6 +228,12 @@ export const deployTemplate: AppBlock = {
           }
         }
 
+        if (deployment.stacks.length === 0 || deployment.state === "NONE") {
+          throw new Error(
+            `Deployment ${deployment.id} did not initialize after 30 polling attempts`,
+          );
+        }
+
         const pendingEventId = await events.createPending({
           event: buildEventData(deployment),
           outputKey: "completed",
