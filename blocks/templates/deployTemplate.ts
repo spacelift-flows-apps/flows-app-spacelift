@@ -357,9 +357,21 @@ export const deployTemplate: AppBlock = {
         for (const item of trackedDeployments.pairs) {
           const { pendingEventId, createdAt } = item.value;
           if (createdAt < staleThreshold) {
+            const deploymentId = item.key.replace(
+              "template-deployment:",
+              "",
+            );
+            const stackIds = (item.value.stackIds as string[]) || [];
+
             await events.cancelPending(
               pendingEventId,
-              `Deployment ${item.key.replace("template-deployment:", "")} did not complete within 7 days - cleaning up stale pending event`,
+              `Deployment ${deploymentId} did not complete within 7 days - cleaning up stale pending event`,
+            );
+
+            await kv.app.delete(
+              stackIds
+                .map((id: string) => `template-stack:${id}`)
+                .concat(item.key),
             );
           }
         }
