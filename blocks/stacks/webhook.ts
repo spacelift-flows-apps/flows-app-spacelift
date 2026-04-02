@@ -29,6 +29,7 @@ export const webhook: AppBlock = {
   name: "Stack Webhook",
   description: "Manages webhook integration for a Spacelift stack",
   category: "Stacks",
+  entrypoint: true,
   config: {
     stackId: {
       name: "Stack ID",

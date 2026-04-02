@@ -23,6 +23,7 @@ export const onRunStateChange: AppBlock = {
   description:
     "Subscribe to run state changes from Spacelift with configurable filtering",
   category: "Runs",
+  entrypoint: true,
   config: {
     stackIds: {
       name: "Stack IDs",
