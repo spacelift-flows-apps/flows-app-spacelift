@@ -5,6 +5,7 @@ export const webhookEvent: AppBlock = {
   description:
     "Receive all events from the Spacelift notification policy. This is an escape hatch block that outputs the raw payload without any filtering.",
   category: "Events",
+  entrypoint: true,
   onInternalMessage: async (input) => {
     const { payload } = input.message.body;
     if (!payload) {
