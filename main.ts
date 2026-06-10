@@ -48,6 +48,7 @@ import { approveRun } from "./blocks/runs/approveRun";
 import { rejectRun } from "./blocks/runs/rejectRun";
 import { promoteRun } from "./blocks/runs/promoteRun";
 import { triggerRun } from "./blocks/runs/triggerRun";
+import { triggerRunBatch } from "./blocks/runs/triggerRunBatch";
 import { onRunStateChange } from "./blocks/runs/subscribeToRunEvents";
 import { performTask } from "./blocks/tasks/performTask";
 import { deployTemplate } from "./blocks/templates/deployTemplate";
@@ -168,6 +169,7 @@ export const app = defineApp({
     addComment,
     promoteRun,
     triggerRun,
+    triggerRunBatch,
     getRun,
     getRunLogs,
     onRunStateChange,
@@ -280,12 +282,13 @@ export const app = defineApp({
       if (webhookPayload.run?.id) {
         const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
         if (value) {
-          const { blockId, pendingEventId, parentEventId } = value;
+          const { blockId, pendingEventId, parentEventId, batchId } = value;
           await messaging.sendToBlocks({
             body: {
               payload: webhookPayload,
               pendingEventId,
               parentEventId,
+              batchId,
             },
             blockIds: [blockId],
           });
