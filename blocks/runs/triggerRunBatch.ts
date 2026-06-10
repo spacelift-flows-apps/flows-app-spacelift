@@ -27,26 +27,28 @@ const TERMINAL_STATES = [
 ];
 
 const ALL_RUN_STATES = [
-  "QUEUED",
-  "CANCELED",
-  "INITIALIZING",
-  "PLANNING",
-  "FAILED",
-  "FINISHED",
-  "UNCONFIRMED",
-  "DISCARDED",
-  "CONFIRMED",
-  "APPLYING",
-  "PERFORMING",
-  "STOPPED",
-  "DESTROYING",
-  "PREPARING",
-  "PREPARING_APPLY",
-  "SKIPPED",
-  "REPLAN_REQUESTED",
-  "READY",
-  "PREPARING_REPLAN",
-  "PENDING_REVIEW",
+    "UNKNOWN",
+    "QUEUED",
+    "CANCELED",
+    "INITIALIZING",
+    "PLANNING",
+    "FAILED",
+    "FINISHED",
+    "UNCONFIRMED",
+    "DISCARDED",
+    "CONFIRMED",
+    "APPLYING",
+    "PERFORMING",
+    "STOPPED",
+    "DESTROYING",
+    "PREPARING",
+    "PREPARING_APPLY",
+    "SKIPPED",
+    "REPLAN_REQUESTED",
+    "PENDING", // DEPRECATED
+    "READY",
+    "PREPARING_REPLAN",
+    "PENDING_REVIEW",
 ];
 
 // Flush at most one delta event per this many seconds.
@@ -214,7 +216,7 @@ export const triggerRunBatch: AppBlock = {
 
         const runs = result.runTriggerBatch.runs as Array<{
           runId: string;
-          run: { id: string; state: string; stackId: string } | null;
+          run: { id: string; state: string; stackId: string };
         }>;
 
         // A batch ID scopes all KV keys for this trigger so multiple batches
@@ -232,8 +234,8 @@ export const triggerRunBatch: AppBlock = {
         // We don't know the stack slug for runs we can't read (dependency
         // triggered on inaccessible stacks); fall back to the runId.
         for (const r of runs) {
-          const stackSlug = r.run?.stackId || r.runId;
-          const state = r.run?.state || "QUEUED";
+          const stackSlug = r.run.stackId;
+          const state = r.run.state;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
@@ -272,9 +274,9 @@ export const triggerRunBatch: AppBlock = {
         const baseline: Record<string, Delta> = {};
         for (const r of runs) {
           baseline[r.runId] = {
-            stackSlug: r.run?.stackId || r.runId,
-            oldState: "",
-            newState: r.run?.state || "QUEUED",
+            stackSlug: r.run?.stackId,
+            oldState: "UNKNOWN",
+            newState: r.run.state,
           };
         }
 
