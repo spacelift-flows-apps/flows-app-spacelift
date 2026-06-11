@@ -280,7 +280,14 @@ export const app = defineApp({
       }
 
       if (webhookPayload.run?.id) {
-        const { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
+        // Single-run blocks (triggerRun, performTask) store under `run:`, while
+        // the batch block scopes its routing entries under `triggerRunBatch:`.
+        let { value } = await kv.app.get(`run:${webhookPayload.run.id}`);
+        if (!value) {
+          ({ value } = await kv.app.get(
+            `triggerRunBatch:${webhookPayload.run.id}`,
+          ));
+        }
         if (value) {
           const { blockId, pendingEventId, parentEventId, batchId } = value;
           await messaging.sendToBlocks({

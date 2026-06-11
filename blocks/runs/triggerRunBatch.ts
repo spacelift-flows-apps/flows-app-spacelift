@@ -124,7 +124,7 @@ async function cleanupBatch(batchId: string): Promise<void> {
   const runKeys = (await listAll(`run:${batchId}:`)).map((p) => p.key);
   const deltaKeys = (await listAll(`delta:${batchId}:`)).map((p) => p.key);
   const appRunKeys = runKeys.map(
-    (k) => `run:${k.substring(`run:${batchId}:`.length)}`,
+    (k) => `triggerRunBatch:${k.substring(`run:${batchId}:`.length)}`,
   );
 
   if (runKeys.length || deltaKeys.length) {
@@ -244,7 +244,7 @@ export const triggerRunBatch: AppBlock = {
           });
 
           await kv.app.set({
-            key: `run:${r.runId}`,
+            key: `triggerRunBatch:${r.runId}`,
             value: {
               blockId: input.block.id,
               batchId,
