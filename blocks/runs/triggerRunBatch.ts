@@ -54,9 +54,9 @@ const ALL_RUN_STATES = [
 // Flush at most one delta event per this many seconds.
 const FLUSH_INTERVAL_SECONDS = 10;
 
-// Batches and their per-run state live in block KV for 7 days, after which
+// Batches and their per-run state live in block KV for 30 days, after which
 // the cleanup schedule reaps anything that never reached completion.
-const TTL_7_DAYS = 7 * 24 * 60 * 60;
+const TTL_30_DAYS = 30 * 24 * 60 * 60;
 
 interface BatchMeta {
   pendingEventId: string;
@@ -240,7 +240,7 @@ export const triggerRunBatch: AppBlock = {
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
             value: { stackSlug, state } satisfies RunState,
-            ttl: TTL_7_DAYS,
+            ttl: TTL_30_DAYS,
           });
 
           await kv.app.set({
@@ -251,7 +251,7 @@ export const triggerRunBatch: AppBlock = {
               pendingEventId,
               parentEventId: input.event.id,
             },
-            ttl: TTL_7_DAYS,
+            ttl: TTL_30_DAYS,
           });
         }
 
@@ -266,7 +266,7 @@ export const triggerRunBatch: AppBlock = {
             createdAt: Date.now(),
             timerArmed: false,
           } satisfies BatchMeta,
-          ttl: TTL_7_DAYS,
+          ttl: TTL_30_DAYS,
         });
 
         // Emit an initial baseline: every run as a delta from "" to its
@@ -319,7 +319,7 @@ export const triggerRunBatch: AppBlock = {
     await kv.block.set({
       key: `run:${batchId}:${runId}`,
       value: { stackSlug, state: newState } satisfies RunState,
-      ttl: TTL_7_DAYS,
+      ttl: TTL_30_DAYS,
     });
 
     // Record the delta to be flushed. If several webhooks for the same run
@@ -334,7 +334,7 @@ export const triggerRunBatch: AppBlock = {
         oldState: (existingDelta as Delta | undefined)?.oldState ?? oldState,
         newState,
       } satisfies Delta,
-      ttl: TTL_7_DAYS,
+      ttl: TTL_30_DAYS,
     });
 
     // Debounce: arm a single flush timer per window. Subsequent changes in the
@@ -348,7 +348,7 @@ export const triggerRunBatch: AppBlock = {
       await kv.block.set({
         key: `batch:${batchId}`,
         value: { ...(meta as BatchMeta), timerArmed: true },
-        ttl: TTL_7_DAYS,
+        ttl: TTL_30_DAYS,
       });
     }
   },
@@ -379,7 +379,7 @@ export const triggerRunBatch: AppBlock = {
     await kv.block.set({
       key: `batch:${batchId}`,
       value: { ...(meta as BatchMeta), timerArmed: false },
-      ttl: TTL_7_DAYS,
+      ttl: TTL_30_DAYS,
     });
 
     if (deltaPairs.length > 0) {
@@ -409,7 +409,7 @@ export const triggerRunBatch: AppBlock = {
         },
       },
       onTrigger: async () => {
-        const staleThreshold = Date.now() - TTL_7_DAYS * 1000;
+        const staleThreshold = Date.now() - TTL_30_DAYS * 1000;
 
         const batches = await listAll("batch:");
         for (const { key, value } of batches) {
@@ -420,7 +420,7 @@ export const triggerRunBatch: AppBlock = {
 
           await events.cancelPending(
             (value as BatchMeta).pendingEventId,
-            `Run batch ${batchId} did not complete within 7 days - cleaning up stale pending event`,
+            `Run batch ${batchId} did not complete within 30 days - cleaning up stale pending event`,
           );
 
           await cleanupBatch(batchId);
