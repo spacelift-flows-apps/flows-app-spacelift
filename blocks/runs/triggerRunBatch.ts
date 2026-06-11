@@ -165,7 +165,7 @@ export const triggerRunBatch: AppBlock = {
         stacks: {
           name: "Stacks",
           description:
-            "The stacks to trigger runs for. Each entry needs a stack (or module) slug and may optionally specify a commit SHA.",
+            "The stacks to trigger runs for. Each entry needs a stack slug and may optionally specify a commit SHA.",
           type: {
             type: "array",
             items: {
@@ -173,7 +173,7 @@ export const triggerRunBatch: AppBlock = {
               properties: {
                 stack: {
                   type: "string",
-                  description: "The stack (or module) slug",
+                  description: "The stack slug",
                 },
                 commitSha: {
                   type: "string",
