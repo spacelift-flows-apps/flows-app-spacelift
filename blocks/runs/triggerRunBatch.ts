@@ -73,7 +73,7 @@ interface RunState {
   stackSlug: string;
   // Spacelift run updatedAt as a nanosecond epoch timestamp. Used to drop
   // out-of-order webhooks.
-  run_updated_at: number;
+  runUpdatedAt: number;
   state: string;
 }
 
@@ -81,7 +81,7 @@ interface Delta {
   stackSlug: string;
   oldState: string;
   newState: string;
-  run_updated_at: number;
+  runUpdatedAt: number;
 }
 
 // Recompute the {STATE: count} summary by listing every tracked run for the
@@ -148,9 +148,9 @@ const runStateValueSchema = {
     stackSlug: { type: "string" as const },
     oldState: { type: "string" as const, enum: ALL_RUN_STATES },
     newState: { type: "string" as const, enum: ALL_RUN_STATES },
-    run_updated_at: { type: "number" as const },
+    runUpdatedAt: { type: "number" as const },
   },
-  required: ["stackSlug", "oldState", "newState", "run_updated_at"],
+  required: ["stackSlug", "oldState", "newState", "runUpdatedAt"],
 };
 
 const stateSummarySchema = {
@@ -247,11 +247,11 @@ export const triggerRunBatch: AppBlock = {
         for (const r of runs) {
           const stackSlug = r.run.stackId;
           const state = r.run.state;
-          const run_updated_at = r.run.updatedAt;
+          const runUpdatedAt = r.run.updatedAt;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
-            value: { stackSlug, state, run_updated_at } satisfies RunState,
+            value: { stackSlug, state, runUpdatedAt } satisfies RunState,
             ttl: TTL_30_DAYS,
           });
 
@@ -289,7 +289,7 @@ export const triggerRunBatch: AppBlock = {
             stackSlug: r.run?.stackId,
             oldState: "UNKNOWN",
             newState: r.run.state,
-            run_updated_at: r.run.updatedAt,
+            runUpdatedAt: r.run.updatedAt,
           };
         }
 
@@ -311,7 +311,7 @@ export const triggerRunBatch: AppBlock = {
     const runId = payload.run.id;
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
-    const run_updated_at = payload.run.updated_at;
+    const runUpdatedAt = payload.run.updated_at;
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
@@ -325,14 +325,14 @@ export const triggerRunBatch: AppBlock = {
     }
     // Ignore out-of-order webhooks: never let an older event overwrite a
     // newer one we've already recorded.
-    if (run_updated_at < (current as RunState).run_updated_at) {
+    if (runUpdatedAt < (current as RunState).runUpdatedAt) {
       return;
     }
 
     // Update the run's current state (feeds the summary recomputed on flush).
     await kv.block.set({
       key: `run:${batchId}:${runId}`,
-      value: { stackSlug, state: newState, run_updated_at } satisfies RunState,
+      value: { stackSlug, state: newState, runUpdatedAt } satisfies RunState,
       ttl: TTL_30_DAYS,
     });
 
@@ -347,7 +347,7 @@ export const triggerRunBatch: AppBlock = {
         stackSlug,
         oldState: (existingDelta as Delta | undefined)?.oldState ?? oldState,
         newState,
-        run_updated_at,
+        runUpdatedAt,
       } satisfies Delta,
       ttl: TTL_30_DAYS,
     });
