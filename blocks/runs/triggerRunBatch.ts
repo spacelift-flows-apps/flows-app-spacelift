@@ -222,7 +222,12 @@ export const triggerRunBatch: AppBlock = {
 
         const runs = result.runTriggerBatch.runs as Array<{
           runId: string;
-          run: { id: string; state: string; stackId: string; updatedAt: number };
+          run: {
+            id: string;
+            state: string;
+            stackId: string;
+            updatedAt: number;
+          };
         }>;
 
         // A batch ID scopes all KV keys for this trigger so multiple batches
