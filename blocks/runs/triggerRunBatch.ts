@@ -255,7 +255,7 @@ export const triggerRunBatch: AppBlock = {
           });
         }
 
-        const { summary, terminalCount } = await computeSummary(batchId);
+        const { summary } = await computeSummary(batchId);
 
         await kv.block.set({
           key: `batch:${batchId}`,
