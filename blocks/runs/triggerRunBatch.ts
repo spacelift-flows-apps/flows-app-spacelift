@@ -284,11 +284,6 @@ export const triggerRunBatch: AppBlock = {
           { batchId, stateChanges: baseline, stateSummary: summary },
           { outputKey: "stateChanged", parentEventId: input.event.id },
         );
-
-        // If the whole batch is already terminal (e.g. all SKIPPED), finish now.
-        if (runs.length > 0 && terminalCount === runs.length) {
-          await emitCompleted(batchId, pendingEventId, input.event.id, summary);
-        }
       },
     },
   },
