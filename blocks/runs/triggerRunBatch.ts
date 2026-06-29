@@ -242,9 +242,10 @@ export const triggerRunBatch: AppBlock = {
         for (const r of runs) {
           const stackSlug = r.run.stackId;
           const state = r.run.state;
-          // No webhook has been delivered yet, so seed with 0; any real
-          // webhook (stateVersion > 0) is always treated as newer.
-          const stateVersion = 0;
+          // No webhook has been delivered yet. The first real webhook can
+          // carry stateVersion 0, so seed with -1 to guarantee any real
+          // webhook (stateVersion >= 0) is treated as newer.
+          const stateVersion = -1;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
@@ -286,7 +287,8 @@ export const triggerRunBatch: AppBlock = {
             stackSlug: r.run?.stackId,
             oldState: "UNKNOWN",
             newState: r.run.state,
-            stateVersion: 0,
+            // No webhook has produced this baseline; mirror the seeded -1.
+            stateVersion: -1,
           };
         }
 
@@ -309,6 +311,7 @@ export const triggerRunBatch: AppBlock = {
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
     const stateVersion = payload.stateVersion;
+    console.log(payload);
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
