@@ -70,9 +70,10 @@ interface BatchMeta {
 
 interface RunState {
   stackSlug: string;
-  // Delivery time of the webhook that produced this state, in epoch
-  // milliseconds. Used to drop out-of-order webhooks.
-  webhookTimestamp: number;
+  // Monotonic version counter of the run state that produced this record.
+  // Increments on every genuine state change, so it's used to drop
+  // out-of-order and duplicate webhooks.
+  stateVersion: number;
   state: string;
 }
 
@@ -80,7 +81,7 @@ interface Delta {
   stackSlug: string;
   oldState: string;
   newState: string;
-  webhookTimestamp: number;
+  stateVersion: number;
 }
 
 // Recompute the {STATE: count} summary by listing every tracked run for the
@@ -147,9 +148,9 @@ const runStateValueSchema = {
     stackSlug: { type: "string" as const },
     oldState: { type: "string" as const, enum: ALL_RUN_STATES },
     newState: { type: "string" as const, enum: ALL_RUN_STATES },
-    webhookTimestamp: { type: "number" as const },
+    stateVersion: { type: "number" as const },
   },
-  required: ["stackSlug", "oldState", "newState", "webhookTimestamp"],
+  required: ["stackSlug", "oldState", "newState", "stateVersion"],
 };
 
 const stateSummarySchema = {
@@ -242,12 +243,12 @@ export const triggerRunBatch: AppBlock = {
           const stackSlug = r.run.stackId;
           const state = r.run.state;
           // No webhook has been delivered yet, so seed with 0; any real
-          // webhook (timestamp > 0) is always treated as newer.
-          const webhookTimestamp = 0;
+          // webhook (stateVersion > 0) is always treated as newer.
+          const stateVersion = 0;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
-            value: { stackSlug, state, webhookTimestamp } satisfies RunState,
+            value: { stackSlug, state, stateVersion } satisfies RunState,
             ttl: TTL_30_DAYS,
           });
 
@@ -285,7 +286,7 @@ export const triggerRunBatch: AppBlock = {
             stackSlug: r.run?.stackId,
             oldState: "UNKNOWN",
             newState: r.run.state,
-            webhookTimestamp: 0,
+            stateVersion: 0,
           };
         }
 
@@ -307,7 +308,7 @@ export const triggerRunBatch: AppBlock = {
     const runId = payload.run.id;
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
-    const webhookTimestamp = payload.timestamp_millis;
+    const stateVersion = payload.stateVersion;
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
@@ -319,19 +320,20 @@ export const triggerRunBatch: AppBlock = {
     if (oldState === newState) {
       return;
     }
-    // Drop out-of-order and duplicate webhooks: never let an event whose
-    // delivery time is older than (out-of-order) or equal to (a redelivery of
-    // the same event) the one we've already recorded overwrite our state. A
-    // genuine redelivery always carries the same timestamp_millis, so this
-    // makes the handler idempotent.
-    if (webhookTimestamp <= (current as RunState).webhookTimestamp) {
+    // Drop out-of-order and duplicate webhooks: stateVersion is a monotonic
+    // counter that increments on every genuine state change, so never let an
+    // event whose version is older than (out-of-order) or equal to (a
+    // redelivery of the same event) the one we've already recorded overwrite
+    // our state. A genuine redelivery always carries the same stateVersion, so
+    // this makes the handler idempotent.
+    if (stateVersion <= (current as RunState).stateVersion) {
       return;
     }
 
     // Update the run's current state (feeds the summary recomputed on flush).
     await kv.block.set({
       key: `run:${batchId}:${runId}`,
-      value: { stackSlug, state: newState, webhookTimestamp } satisfies RunState,
+      value: { stackSlug, state: newState, stateVersion } satisfies RunState,
       ttl: TTL_30_DAYS,
     });
 
@@ -346,7 +348,7 @@ export const triggerRunBatch: AppBlock = {
         stackSlug,
         oldState: (existingDelta as Delta | undefined)?.oldState ?? oldState,
         newState,
-        webhookTimestamp,
+        stateVersion,
       } satisfies Delta,
       ttl: TTL_30_DAYS,
     });
