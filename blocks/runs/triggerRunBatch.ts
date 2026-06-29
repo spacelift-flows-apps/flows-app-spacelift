@@ -10,7 +10,6 @@ const TRIGGER_RUN_BATCH_MUTATION = `
           id
           state
           stackId
-          updatedAt
         }
       }
     }
@@ -71,9 +70,9 @@ interface BatchMeta {
 
 interface RunState {
   stackSlug: string;
-  // Spacelift run updatedAt as a nanosecond epoch timestamp. Used to drop
-  // out-of-order webhooks.
-  runUpdatedAt: number;
+  // Delivery time of the webhook that produced this state, in epoch
+  // milliseconds. Used to drop out-of-order webhooks.
+  webhookTimestamp: number;
   state: string;
 }
 
@@ -81,7 +80,7 @@ interface Delta {
   stackSlug: string;
   oldState: string;
   newState: string;
-  runUpdatedAt: number;
+  webhookTimestamp: number;
 }
 
 // Recompute the {STATE: count} summary by listing every tracked run for the
@@ -148,9 +147,9 @@ const runStateValueSchema = {
     stackSlug: { type: "string" as const },
     oldState: { type: "string" as const, enum: ALL_RUN_STATES },
     newState: { type: "string" as const, enum: ALL_RUN_STATES },
-    runUpdatedAt: { type: "number" as const },
+    webhookTimestamp: { type: "number" as const },
   },
-  required: ["stackSlug", "oldState", "newState", "runUpdatedAt"],
+  required: ["stackSlug", "oldState", "newState", "webhookTimestamp"],
 };
 
 const stateSummarySchema = {
@@ -222,12 +221,7 @@ export const triggerRunBatch: AppBlock = {
 
         const runs = result.runTriggerBatch.runs as Array<{
           runId: string;
-          run: {
-            id: string;
-            state: string;
-            stackId: string;
-            updatedAt: number;
-          };
+          run: { id: string; state: string; stackId: string };
         }>;
 
         // A batch ID scopes all KV keys for this trigger so multiple batches
@@ -247,11 +241,13 @@ export const triggerRunBatch: AppBlock = {
         for (const r of runs) {
           const stackSlug = r.run.stackId;
           const state = r.run.state;
-          const runUpdatedAt = r.run.updatedAt;
+          // No webhook has been delivered yet, so seed with 0; any real
+          // webhook (timestamp > 0) is always treated as newer.
+          const webhookTimestamp = 0;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
-            value: { stackSlug, state, runUpdatedAt } satisfies RunState,
+            value: { stackSlug, state, webhookTimestamp } satisfies RunState,
             ttl: TTL_30_DAYS,
           });
 
@@ -289,7 +285,7 @@ export const triggerRunBatch: AppBlock = {
             stackSlug: r.run?.stackId,
             oldState: "UNKNOWN",
             newState: r.run.state,
-            runUpdatedAt: r.run.updatedAt,
+            webhookTimestamp: 0,
           };
         }
 
@@ -311,7 +307,7 @@ export const triggerRunBatch: AppBlock = {
     const runId = payload.run.id;
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
-    const runUpdatedAt = payload.run.updated_at;
+    const webhookTimestamp = payload.timestamp_millis;
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
@@ -323,16 +319,19 @@ export const triggerRunBatch: AppBlock = {
     if (oldState === newState) {
       return;
     }
-    // Ignore out-of-order webhooks: never let an older event overwrite a
-    // newer one we've already recorded.
-    if (runUpdatedAt < (current as RunState).runUpdatedAt) {
+    // Drop out-of-order and duplicate webhooks: never let an event whose
+    // delivery time is older than (out-of-order) or equal to (a redelivery of
+    // the same event) the one we've already recorded overwrite our state. A
+    // genuine redelivery always carries the same timestamp_millis, so this
+    // makes the handler idempotent.
+    if (webhookTimestamp <= (current as RunState).webhookTimestamp) {
       return;
     }
 
     // Update the run's current state (feeds the summary recomputed on flush).
     await kv.block.set({
       key: `run:${batchId}:${runId}`,
-      value: { stackSlug, state: newState, runUpdatedAt } satisfies RunState,
+      value: { stackSlug, state: newState, webhookTimestamp } satisfies RunState,
       ttl: TTL_30_DAYS,
     });
 
@@ -347,7 +346,7 @@ export const triggerRunBatch: AppBlock = {
         stackSlug,
         oldState: (existingDelta as Delta | undefined)?.oldState ?? oldState,
         newState,
-        runUpdatedAt,
+        webhookTimestamp,
       } satisfies Delta,
       ttl: TTL_30_DAYS,
     });
