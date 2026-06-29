@@ -315,11 +315,20 @@ export const triggerRunBatch: AppBlock = {
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
       // Run isn't part of a batch we're tracking (or already cleaned up).
+      console.log(
+        "triggerRunBatch: skipping webhook for untracked run (no KV entry)",
+        { batchId, runId },
+      );
       return;
     }
 
     const oldState = (current as RunState).state;
     if (oldState === newState) {
+      console.log("triggerRunBatch: skipping webhook, state unchanged", {
+        batchId,
+        runId,
+        state: newState,
+      });
       return;
     }
     // Drop out-of-order and duplicate webhooks: stateVersion is a monotonic
@@ -329,6 +338,15 @@ export const triggerRunBatch: AppBlock = {
     // our state. A genuine redelivery always carries the same stateVersion, so
     // this makes the handler idempotent.
     if (stateVersion <= (current as RunState).stateVersion) {
+      console.log(
+        "triggerRunBatch: skipping out-of-order or duplicate webhook",
+        {
+          batchId,
+          runId,
+          incomingStateVersion: stateVersion,
+          currentStateVersion: (current as RunState).stateVersion,
+        },
+      );
       return;
     }
 
