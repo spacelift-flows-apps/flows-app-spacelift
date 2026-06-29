@@ -70,6 +70,10 @@ interface BatchMeta {
 
 interface RunState {
   stackSlug: string;
+  // Monotonic version counter of the run state that produced this record.
+  // Increments on every genuine state change, so it's used to drop
+  // out-of-order and duplicate webhooks.
+  stateVersion: number;
   state: string;
 }
 
@@ -77,6 +81,7 @@ interface Delta {
   stackSlug: string;
   oldState: string;
   newState: string;
+  stateVersion: number;
 }
 
 // Recompute the {STATE: count} summary by listing every tracked run for the
@@ -143,8 +148,9 @@ const runStateValueSchema = {
     stackSlug: { type: "string" as const },
     oldState: { type: "string" as const, enum: ALL_RUN_STATES },
     newState: { type: "string" as const, enum: ALL_RUN_STATES },
+    stateVersion: { type: "number" as const },
   },
-  required: ["stackSlug", "oldState", "newState"],
+  required: ["stackSlug", "oldState", "newState", "stateVersion"],
 };
 
 const stateSummarySchema = {
@@ -236,10 +242,14 @@ export const triggerRunBatch: AppBlock = {
         for (const r of runs) {
           const stackSlug = r.run.stackId;
           const state = r.run.state;
+          // No webhook has been delivered yet. The first real webhook can
+          // carry stateVersion 0, so seed with -1 to guarantee any real
+          // webhook (stateVersion >= 0) is treated as newer.
+          const stateVersion = -1;
 
           await kv.block.set({
             key: `run:${batchId}:${r.runId}`,
-            value: { stackSlug, state } satisfies RunState,
+            value: { stackSlug, state, stateVersion } satisfies RunState,
             ttl: TTL_30_DAYS,
           });
 
@@ -277,6 +287,8 @@ export const triggerRunBatch: AppBlock = {
             stackSlug: r.run?.stackId,
             oldState: "UNKNOWN",
             newState: r.run.state,
+            // No webhook has produced this baseline; mirror the seeded -1.
+            stateVersion: -1,
           };
         }
 
@@ -298,22 +310,50 @@ export const triggerRunBatch: AppBlock = {
     const runId = payload.run.id;
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
+    const stateVersion = payload.stateVersion;
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
       // Run isn't part of a batch we're tracking (or already cleaned up).
+      console.log(
+        "triggerRunBatch: skipping webhook for untracked run (no KV entry)",
+        { batchId, runId },
+      );
       return;
     }
 
     const oldState = (current as RunState).state;
     if (oldState === newState) {
+      console.log("triggerRunBatch: skipping webhook, state unchanged", {
+        batchId,
+        runId,
+        state: newState,
+      });
+      return;
+    }
+    // Drop out-of-order and duplicate webhooks: stateVersion is a monotonic
+    // counter that increments on every genuine state change, so never let an
+    // event whose version is older than (out-of-order) or equal to (a
+    // redelivery of the same event) the one we've already recorded overwrite
+    // our state. A genuine redelivery always carries the same stateVersion, so
+    // this makes the handler idempotent.
+    if (stateVersion <= (current as RunState).stateVersion) {
+      console.log(
+        "triggerRunBatch: skipping out-of-order or duplicate webhook",
+        {
+          batchId,
+          runId,
+          incomingStateVersion: stateVersion,
+          currentStateVersion: (current as RunState).stateVersion,
+        },
+      );
       return;
     }
 
     // Update the run's current state (feeds the summary recomputed on flush).
     await kv.block.set({
       key: `run:${batchId}:${runId}`,
-      value: { stackSlug, state: newState } satisfies RunState,
+      value: { stackSlug, state: newState, stateVersion } satisfies RunState,
       ttl: TTL_30_DAYS,
     });
 
@@ -328,6 +368,7 @@ export const triggerRunBatch: AppBlock = {
         stackSlug,
         oldState: (existingDelta as Delta | undefined)?.oldState ?? oldState,
         newState,
+        stateVersion,
       } satisfies Delta,
       ttl: TTL_30_DAYS,
     });
