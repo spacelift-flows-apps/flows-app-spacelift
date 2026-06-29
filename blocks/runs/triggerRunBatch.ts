@@ -311,7 +311,6 @@ export const triggerRunBatch: AppBlock = {
     const newState = payload.state;
     const stackSlug = payload.stack?.id || runId;
     const stateVersion = payload.stateVersion;
-    console.log(payload);
 
     const { value: current } = await kv.block.get(`run:${batchId}:${runId}`);
     if (!current) {
