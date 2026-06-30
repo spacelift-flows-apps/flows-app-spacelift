@@ -337,7 +337,16 @@ export const triggerRunBatch: AppBlock = {
     // redelivery of the same event) the one we've already recorded overwrite
     // our state. A genuine redelivery always carries the same stateVersion, so
     // this makes the handler idempotent.
-    if (stateVersion <= (current as RunState).stateVersion) {
+    //
+    // Terminal states are exempt: we always want to record a genuine
+    // transition into a terminal state (oldState !== newState already, checked
+    // above) even if its stateVersion is stale or not bumped, so the batch can
+    // reach completion. Redeliveries of an already-terminal run can't get here
+    // because the oldState === newState check above drops them first.
+    if (
+      stateVersion <= (current as RunState).stateVersion &&
+      !TERMINAL_STATES.includes(newState)
+    ) {
       console.log(
         "triggerRunBatch: skipping out-of-order or duplicate webhook",
         {
