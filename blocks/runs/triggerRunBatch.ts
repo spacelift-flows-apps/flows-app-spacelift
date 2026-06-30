@@ -52,7 +52,7 @@ const ALL_RUN_STATES = [
 ];
 
 // Flush at most one delta event per this many seconds.
-const FLUSH_INTERVAL_SECONDS = 5;
+const FLUSH_INTERVAL_SECONDS = 10;
 
 // Batches and their per-run state live in block KV for 30 days, after which
 // the cleanup schedule reaps anything that never reached completion.
